@@ -38,22 +38,15 @@ s.reboot.doWhenBooted({
 		~out.noteOff(chan, num, vel);
 	});
 
-	//cleanup
-	/*(
-	~on.free;
-	~off.free;
-	)*/
-
-
 
 	//gui for midi and changinbg the standard deviation of the gaussian distribution
 
 	~lastSelectedOutputItem = -1;
 	~lastSelectedInputItem = -1;
-	w = Window.new("Midi Output", Rect(100, 100, 800, 550));
+	w = Window.new("Midi Output", Rect(100, 100, 660, 550));
 	w.view.decorator = FlowLayout(w.view.bounds);
 
-	m = EZListView(w, 240@240, "Midi inputs", gap:20);
+	m = EZListView(w, 240@240, "Midi inputs", margin:10@5);
 	MIDIClient.sources.do({|item, index|
 		m.addItem(item.name, {|a| a.value.postln;
 			if(~lastSelectedInputItem > 0, {~in.disconnect(0, ~lastSelectedInputItem)});
@@ -63,7 +56,7 @@ s.reboot.doWhenBooted({
 		index.postln;
 	});
 
-	l = EZListView(w, 240@240, "Midi outputs",gap:20);
+	l = EZListView(w, 240@240, "Midi outputs", margin:10@5);
 	MIDIClient.destinations.do({|item, index|
 		l.addItem(item.name, {|a| a.value.postln;
 			if(~lastSelectedOutputItem > 0, {~out.disconnect(~lastSelectedOutputItem)});
@@ -73,12 +66,19 @@ s.reboot.doWhenBooted({
 		index.postln;55
 	});
 
-	~delaySlider = EZSlider.new(w, 80@400, "Delay standard deviation in s", ControlSpec(0.001, 1),labelWidth:80, labelHeight:40, layout:'vert');
+	~delaySlider = EZSlider.new(w, 80@400, "Delay standard deviation in s", ControlSpec(0.001, 1),labelWidth:80, labelHeight:40, layout:'vert', margin:10@5);
 	~delaySlider.action = {|a| ~randomTimeDelta.dev = ~delaySlider.value;
 	};
 
-	~velocitySlider = EZSlider.new(w, 80@400, "Velocity Standard Deviation", ControlSpec(1, 10), labelWidth:80, labelHeight:40, layout:'vert' );
+	~velocitySlider = EZSlider.new(w, 80@400, "Velocity Standard Deviation in Velocity Numbers", ControlSpec(1, 10), labelWidth:80, labelHeight:40, layout:'vert', margin:10@5 );
 	~velocitySlider.action = {|a| ~randomVelocityDelta.dev = a.value};
 
 	w.front;
 });
+
+
+//cleanup
+(
+~on.free;
+~off.free;
+)
