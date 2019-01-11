@@ -1,4 +1,4 @@
-s.quit;
+s = Server.default.quit;
 //boot server and set up globals/reset everything
 
 s.reboot.doWhenBooted({
@@ -49,7 +49,7 @@ s.reboot.doWhenBooted({
 //gui for midi and changinbg the standard deviation of the gaussian distribution
 
 ~lastSelectedItem = -1;
-w = Window.new("Midi Output", 650@4230, true, true, s);
+w = Window.new("Midi Output", Rect(100, 100, 800, 550));
 w.view.decorator = FlowLayout(w.view.bounds);
 
 l = EZListView(w, 240@240, "Midi outputs");
@@ -59,26 +59,17 @@ MIDIClient.destinations.do({|item, index|
 		~out.connect(a.value);
 		~lastSelectedItem = a.value;
 	} );
-	index.postln;
+	index.postln;55
 });
 c = FlowView.new(w, 200@400);
 
+
 ~delaySlider = EZSlider.new(w, 80@400, "Delay standard deviation in s", ControlSpec(0.001, 1),labelWidth:80, labelHeight:40, layout:'vert');
-~delaySlider.action = {~randomTimeDelta.dev = ~delaySlider.value;};
+~delaySlider.action = {|a| ~randomTimeDelta.dev = ~delaySlider.value;
+    };
 
 ~velocitySlider = EZSlider.new(w, 80@400, "Velocity Standard Deviation", ControlSpec(1, 10), labelWidth:80, labelHeight:40, layout:'vert' );
-~velocitySlider.action = {~randomeVelocityDelta.dev = ~velocitySlider.value};
+~velocitySlider.action = {|a| ~randomVelocityDelta.dev = a.value};
 
 w.front;
 });
-
-~randomTimeDelta.asStream.next
-
-//random tests, ignore
-/*~delayDeviation
-~out.uid
-SystemClock.seconds
-Pgauss(0, 1, 1).asStream.next.abs
-
-Server.supernova
-s.boot*/
