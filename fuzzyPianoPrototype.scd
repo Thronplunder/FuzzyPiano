@@ -2,9 +2,10 @@
 MIDIClient.disposeClient;
 MIDIClient.init(1, 1);
 MIDIClient.sources;
-
+s.control
 ~in = MIDIIn.connect;
 ~out = MIDIOut.new(0);
+~out.latency = 0;
 
 
 
@@ -19,7 +20,6 @@ MIDIClient.sources;
 //handle note on messages. change up velocity, resend them after a random delay
 ~on = MIDIFunc.noteOn({|vel, num, chan, src|
 	var timeDelay, newVelocity;
-
 	timeDelay = ~randomTimeDelta.asStream.next.abs;
 	newVelocity = (vel + ~randomVelocityDelta.asStream.next).fold(0, 127);
 	("Delay: " ++ timeDelay ++ " new Velocity: " ++ newVelocity).postln;
@@ -46,7 +46,7 @@ w.view.decorator = FlowLayout(w.view.bounds);
 m = EZListView(w, 240@240, "Midi inputs", margin:10@5, labelHeight:60);
 MIDIClient.sources.do({|item, index|
 	m.addItem(item.name, {|a| a.value.postln;
-		if(~lastSelectedInputItem > 0, {~in.disconnect(0, ~lastSelectedInputItem)});
+		if(~lastSelectedInputItem >= 0, {~in.disconnect(0, ~lastSelectedInputItem)});
 		~in.connect(0,MIDIClient.sources.at(a.value));
 		~lastSelectedInputItem = a.value;
 	} );
@@ -56,9 +56,11 @@ MIDIClient.sources.do({|item, index|
 l = EZListView(w, 240@240, "Midi outputs", margin:10@5, labelHeight:60);
 MIDIClient.destinations.do({|item, index|
 	l.addItem(item.name, {|a| a.value.postln;
-		if(~lastSelectedOutputItem > 0, {~out.disconnect(~lastSelectedOutputItem)});
+		if(~lastSelectedOutputItem >= 0, {("disconnecting: " ++ ~lastSelectedOutputItem).postln;
+			~out.disconnect(~lastSelectedOutputItem);});
+		("connecting: " ++ a.value).postln;
 		~out.connect(a.value);
-		~lastSelectedOutPutItem = a.value;
+		~lastSelectedOutputItem = a.value;
 	} );
 	index.postln;55
 });
