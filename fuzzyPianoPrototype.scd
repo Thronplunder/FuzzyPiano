@@ -40,10 +40,10 @@ MIDIClient.sources;
 
 ~lastSelectedOutputItem = -1;
 ~lastSelectedInputItem = -1;
-w = Window.new("Midi Output", Rect(100, 100, 660, 550));
+w = Window.new("Midi Settings", Rect(100, 100, 680, 550));
 w.view.decorator = FlowLayout(w.view.bounds);
 
-m = EZListView(w, 240@240, "Midi inputs", margin:10@5);
+m = EZListView(w, 240@240, "Midi inputs", margin:10@5, labelHeight:60);
 MIDIClient.sources.do({|item, index|
 	m.addItem(item.name, {|a| a.value.postln;
 		if(~lastSelectedInputItem > 0, {~in.disconnect(0, ~lastSelectedInputItem)});
@@ -53,7 +53,7 @@ MIDIClient.sources.do({|item, index|
 	index.postln;
 });
 
-l = EZListView(w, 240@240, "Midi outputs", margin:10@5);
+l = EZListView(w, 240@240, "Midi outputs", margin:10@5, labelHeight:60);
 MIDIClient.destinations.do({|item, index|
 	l.addItem(item.name, {|a| a.value.postln;
 		if(~lastSelectedOutputItem > 0, {~out.disconnect(~lastSelectedOutputItem)});
@@ -63,11 +63,11 @@ MIDIClient.destinations.do({|item, index|
 	index.postln;55
 });
 
-~delaySlider = EZSlider.new(w, 80@400, "Delay standard deviation in s", ControlSpec(0.001, 1),labelWidth:80, labelHeight:40, layout:'vert', margin:10@5);
+~delaySlider = EZSlider.new(w, 90@400, "Delay standard deviation in s", ControlSpec(0.001, 1),labelWidth:80, labelHeight:60, layout:'vert', margin:10@5);
 ~delaySlider.action = {|a| ~randomTimeDelta.dev = ~delaySlider.value;
 };
 
-~velocitySlider = EZSlider.new(w, 80@400, "Velocity Standard Deviation in Velocity Numbers", ControlSpec(1, 10), labelWidth:80, labelHeight:40, layout:'vert', margin:10@5 );
+~velocitySlider = EZSlider.new(w, 90@400, "Velocity Standard Deviation in Velocity Numbers", ControlSpec(1, 10), labelWidth:80, labelHeight:60, layout:'vert', margin:10@5 );
 ~velocitySlider.action = {|a| ~randomVelocityDelta.dev = a.value};
 
 w.front;
