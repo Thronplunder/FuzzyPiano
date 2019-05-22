@@ -2,8 +2,7 @@
 MIDIClient.disposeClient;
 MIDIClient.init(1, 1);
 MIDIClient.sources;
-s.control
-~in = MIDIIn.connect;
+~in = MIDIIn.connectAll;
 ~out = MIDIOut.new(0);
 ~out.latency = 0;
 
